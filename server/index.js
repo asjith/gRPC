@@ -2,7 +2,7 @@ const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
 const path = require("path");
 
-const CUSTOMERS = [
+let CUSTOMERS = [
   {
     id: "werwere",
     name: "John",
@@ -29,6 +29,45 @@ const server = new grpc.Server();
 server.addService(customersProto.CustomerService.service, {
   GetAllCustomers: (call, callback) => {
     callback(null, { customers: CUSTOMERS });
+  },
+  GetCustomer: (call, callback) => {
+    const customer = CUSTOMERS.find((cust) => cust.id === call.request.id);
+
+    if (customer) {
+      callback(null, customer);
+    } else {
+      callback({ error: "customer not found" });
+    }
+  },
+  AddCustomer: (call, callback) => {
+    const newCustomer = call.request;
+
+    CUSTOMERS.push(newCustomer);
+
+    callback(null, newCustomer);
+  },
+  UpdateCustomer: (call, callback) => {
+    const update = call.request;
+    const updateIndex = CUSTOMERS.findIndex((cust) => cust.id === update.id);
+
+    if (updateIndex !== -1) {
+      CUSTOMERS[updateIndex] = update;
+      callback(null, update);
+    } else {
+      callback({ error: "Customer to be updated not found" });
+    }
+  },
+  DeleteCustomer: (call, callback) => {
+    const deleteIndex = CUSTOMERS.findIndex(
+      (cust) => cust.id === call.request.id
+    );
+
+    if (deleteIndex !== -1) {
+      CUSTOMERS.splice(deleteIndex, 1);
+      callback(null, {});
+    } else {
+      callback({ error: "Customer to be deleted not found" });
+    }
   }
 });
 

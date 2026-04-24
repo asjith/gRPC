@@ -51,7 +51,7 @@ server.addService(customersProto.CustomerService.service, {
     const updateIndex = CUSTOMERS.findIndex((cust) => cust.id === update.id);
 
     if (updateIndex !== -1) {
-      CUSTOMERS[updateIndex] = update;
+      CUSTOMERS[updateIndex] = { ...CUSTOMERS[updateIndex], ...update };
       callback(null, update);
     } else {
       callback({ error: "Customer to be updated not found" });

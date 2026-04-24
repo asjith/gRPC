@@ -7,9 +7,9 @@ const packageDefinition = protoLoader.loadSync(
   path.join(__dirname, "../customers.proto"),
   { keepCase: true, longs: String, enums: String, arrays: true }
 );
-const Service = grpc.loadPackageDefinition(packageDefinition).CustomerService;
+const CustomersProto = grpc.loadPackageDefinition(packageDefinition);
 
-const client = new Service(
+const client = new CustomersProto.CustomerService(
   "127.0.0.1:30043",
   grpc.credentials.createInsecure()
 );

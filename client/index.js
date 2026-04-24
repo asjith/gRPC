@@ -6,7 +6,9 @@ const app = express();
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("hello world");
+  client.getAllCustomers({}, (error, data) => {
+    res.json(data.customers);
+  });
 });
 
 app.listen(3000, () => {
